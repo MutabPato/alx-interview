@@ -27,24 +27,26 @@ request(apiUrl, { json: true }, (err, res, body) => {
     return;
   }
 
-  const characters = body.characters;
+  const characterUrls = body.characters;
+  const characterNames = new Array(characterUrls.length); // Placeholder for names
   let completedRequests = 0;
 
-  characters.forEach((url, index) => {
+  characterUrls.forEach((url, index) => {
     request(url, { json: true }, (charErr, charRes, charBody) => {
-      completedRequests++;
-
       if (charErr) {
         console.error('Error fetching character data:', charErr);
       } else if (charRes.statusCode === 200) {
-        console.log(charBody.name);
+        characterNames[index] = charBody.name; // Ensure order
       } else {
         console.error(`Error fetching character (Status Code:; ${charRes.statusCode})`);
       }
+      completedRequests++;
 
-      // Ensure script ends after all requests are completed
-      if (completedRequests === characters.length) {
-        process.exit(0);
+      // Print all character once all requests are completed
+      if (completedRequests === characterUrls.length) {
+        characterNames.forEach((name) => {
+          if (name) console.log(name);
+        });
       }
     });
   });
