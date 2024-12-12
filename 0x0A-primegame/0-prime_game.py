@@ -6,6 +6,7 @@ Prime Game
 
 def isWinner(x, nums):
     """
+    Function to solve the prime game
     """
     def sieve(n):
         """
